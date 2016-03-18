@@ -1,9 +1,9 @@
-# laravel5-api-generator
-Generates boilerplate for laravel REST API: migration, controller, model, request and route.
+# lumen-api-generator
+Generates boilerplate for lumen REST API: migration, controller, model, request and route.
 
 <h3>Installation</h3>
 ```
-composer require --dev asmiarowski/laravel5-api-generator
+composer require --dev asmiarowski/lumen-api-generator
 ```
 <p>Add this to app\Providers\AppServiceProvider inside boot() method:</p>
 ```

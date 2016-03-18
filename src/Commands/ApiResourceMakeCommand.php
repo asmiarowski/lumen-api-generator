@@ -117,9 +117,11 @@ class ApiResourceMakeCommand extends Command
      * Add routes for resource
      */
     protected function addRoute() {
-        $line = sprintf("%sRoute::pattern('%s', '[0-9]+');%s", PHP_EOL, $this->varModelName, PHP_EOL);
-        $line .= sprintf("Route::resource('%s', '%sController', ['only' => ['index', 'show', 'store', 'destroy']]);%s", $this->varModelName, $this->modelName, PHP_EOL);
-        $line .= sprintf("Route::put('%s/{%s}', '%sController@store');%s", $this->varModelName, $this->varModelName, $this->modelName, PHP_EOL);
+        $line .= sprintf('$app->get(\'%s\', \'%sController@index\');%s', $this->varModelName, $this->modelName, PHP_EOL);
+        $line .= sprintf('$app->get(\'%s/{%s}\', \'%sController@show\');%s', $this->varModelName, $this->varModelName, $this->modelName, PHP_EOL);
+        $line .= sprintf('$app->post(\'%s\', \'%sController@store\');%s', $this->varModelName, $this->modelName, PHP_EOL);
+        $line .= sprintf('$app->put(\'%s/{%s}\', \'%sController@store\');%s', $this->varModelName, $this->varModelName, $this->modelName, PHP_EOL);
+        $line .= sprintf('$app->delete(\'%s/{%s}\', \'%sController@destroy\');%s', $this->varModelName, $this->varModelName, $this->modelName, PHP_EOL);
         $this->files->append($this->getPath('route'), $line);
     }
     
