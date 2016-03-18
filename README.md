@@ -1,5 +1,6 @@
 # lumen-api-generator
 Generates boilerplate for lumen REST API: migration, controller, model, request and route.
+<b>Generator creates Eloquent Models and use them in generated controllers. If you want to use this package you are encouraged to uncomment `$app->withEloquent` in `bootstrap/app.php`</b>
 
 <h3>Installation</h3>
 ```
