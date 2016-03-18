@@ -1,9 +1,9 @@
 {
-    "name": "asmiarowski/laravel5-api-generator",
+    "name": "asmiarowski/lumen-api-generator",
     "description": "Artisan generator for API reasource.",
-    "keywords": ["laravel", "generators", "REST API"],
+    "keywords": ["lumen", "generators", "REST API"],
     "license": "MIT",
-    "homepage": "https://github.com/asmiarowski/laravel5-api-generator",
+    "homepage": "https://github.com/asmiarowski/lumen-api-generator",
     "require": {
         "php": ">=5.5.0",
         "icanboogie/inflector": "^1.3"
