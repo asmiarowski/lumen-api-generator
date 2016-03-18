@@ -117,7 +117,7 @@ class ApiResourceMakeCommand extends Command
      * Add routes for resource
      */
     protected function addRoute() {
-        $line .= sprintf('$app->get(\'%s\', \'%sController@index\');%s', $this->varModelName, $this->modelName, PHP_EOL);
+        $line = sprintf('$app->get(\'%s\', \'%sController@index\');%s', $this->varModelName, $this->modelName, PHP_EOL);
         $line .= sprintf('$app->get(\'%s/{%s}\', \'%sController@show\');%s', $this->varModelName, $this->varModelName, $this->modelName, PHP_EOL);
         $line .= sprintf('$app->post(\'%s\', \'%sController@store\');%s', $this->varModelName, $this->modelName, PHP_EOL);
         $line .= sprintf('$app->put(\'%s/{%s}\', \'%sController@store\');%s', $this->varModelName, $this->varModelName, $this->modelName, PHP_EOL);
