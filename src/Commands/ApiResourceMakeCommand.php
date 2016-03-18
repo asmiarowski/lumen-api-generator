@@ -13,14 +13,14 @@ use Smiarowski\Generators\Migrations\ValidationBuilder;
 class ApiResourceMakeCommand extends Command
 {
     use AppNamespaceDetectorTrait;
-    
+
     /**
      * The console command name.
      *
      * @var string
      */
     protected $signature = 'make:api-resource {name} {--schema=} {--softdeletes}';
-    
+
     /**
      * The console command description.
      *
@@ -52,27 +52,29 @@ class ApiResourceMakeCommand extends Command
      * @var Inflector
      */
     protected $inflector;
-    
+
     /**
      * Create a new command instance.
      *
      * @param \Illuminate\Filesystem\Filesystem $files
      * @param \Illuminate\Support\Composer $composer
      */
-    public function __construct(Filesystem $files, Composer $composer) {
+    public function __construct(Filesystem $files, Composer $composer)
+    {
         parent::__construct();
-        
+
         $this->files = $files;
         $this->composer = $composer;
         $this->inflector = Inflector::get('en');
     }
-    
+
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function fire() {
+    public function fire()
+    {
         $this->setAttribs();
         foreach ($this->fileTypes as $type) {
             $this->createFile($type);
@@ -84,9 +86,10 @@ class ApiResourceMakeCommand extends Command
     /**
      * Set up of attributes
      */
-    protected function setAttribs() {
+    protected function setAttribs()
+    {
         $name = strtolower($this->argument('name'));
-        
+
         $this->tableName = $this->inflector->pluralize($this->inflector->underscore($name));
         $this->varModelName = $this->inflector->singularize($this->inflector->camelize($name, Inflector::DOWNCASE_FIRST_LETTER));
         $this->varModelNamePlural = $this->inflector->pluralize($this->varModelName);
@@ -97,26 +100,28 @@ class ApiResourceMakeCommand extends Command
      * Creates generated file of specified type
      * @param string $type
      */
-    protected function createFile($type = 'migration') {
+    protected function createFile($type = 'migration')
+    {
         if ($this->files->exists($path = $this->getPath($type))) {
             foreach ($this->createdFiles as $filePath) {
                 $this->files->delete($filePath);
             }
-            
+
             $this->error($path . ' already exists!');
             die();
         }
-        
+
         $this->makeDirectory($path);
         $this->files->put($path, $this->compileStub($type));
         $this->createdFiles[] = $path;
         $this->info(ucfirst($type) . ' created successfully.');
     }
-    
+
     /**
      * Add routes for resource
      */
-    protected function addRoute() {
+    protected function addRoute()
+    {
         $line = sprintf('$app->get(\'%s\', \'%sController@index\');%s', $this->varModelName, $this->modelName, PHP_EOL);
         $line .= sprintf('$app->get(\'%s/{%s}\', \'%sController@show\');%s', $this->varModelName, $this->varModelName, $this->modelName, PHP_EOL);
         $line .= sprintf('$app->post(\'%s\', \'%sController@store\');%s', $this->varModelName, $this->modelName, PHP_EOL);
@@ -124,26 +129,28 @@ class ApiResourceMakeCommand extends Command
         $line .= sprintf('$app->delete(\'%s/{%s}\', \'%sController@destroy\');%s', $this->varModelName, $this->varModelName, $this->modelName, PHP_EOL);
         $this->files->append($this->getPath('route'), $line);
     }
-    
+
     /**
      * Build the directory for the class if necessary.
      *
      * @param  string $path
      * @return string
      */
-    protected function makeDirectory($path) {
+    protected function makeDirectory($path)
+    {
         if (!$this->files->isDirectory(dirname($path))) {
             $this->files->makeDirectory(dirname($path), 0755, true, true);
         }
     }
-    
+
     /**
      * Get the path to files being created.
      *
      * @param  string $type migration|controller|model|request|route
      * @return string
      */
-    protected function getPath($type = 'migration') {
+    protected function getPath($type = 'migration')
+    {
         switch ($type) {
             case 'migration':
                 return sprintf('%s/database/migrations/%s_create_%s_table.php', base_path(), date('Y_m_d_His'), $this->tableName);
@@ -159,18 +166,20 @@ class ApiResourceMakeCommand extends Command
         return '';
     }
 
-    protected function app_path() {
+    protected function app_path()
+    {
         if (function_exists('app_path')) return app_path();
 
         return base_path() . '/app';
     }
-    
+
     /**
      * Compile the migration stub.
      * @param  string $stubName Filename of the stub: migration|controller|model|request
      * @return string
      */
-    protected function compileStub($stubName = 'migration') {
+    protected function compileStub($stubName = 'migration')
+    {
         $stub = $this->files->get(sprintf('%s/../stubs/%s.stub', __DIR__, $stubName));
         $this->replaceInStub($stub);
         if ($stubName === 'migration') {
@@ -179,17 +188,18 @@ class ApiResourceMakeCommand extends Command
         if ($stubName === 'request') {
             $this->replaceValidationStub($stub);
         }
-        
+
         return $stub;
     }
-    
+
     /**
      * Replace placeholders with proper values
      * @param  string $stub
      * @return void
      */
-    protected function replaceInStub(&$stub) {
-        $stub = str_replace('{{app_name}}', str_replace('\\', '', $this->getAppNamespace()), $stub);
+    protected function replaceInStub(&$stub)
+    {
+        $stub = str_replace('{{app_name}}', 'App', $stub);
         $stub = str_replace('{{model_name}}', $this->modelName, $stub);
         $stub = str_replace('{{var_model_name}}', $this->varModelName, $stub);
         $stub = str_replace('{{var_model_name_plural}}', $this->varModelNamePlural, $stub);
@@ -205,13 +215,14 @@ class ApiResourceMakeCommand extends Command
      * @param  string $stub
      * @return $this
      */
-    protected function replaceSchema(&$stub) {
+    protected function replaceSchema(&$stub)
+    {
         if ($schema = $this->option('schema')) {
             $schema = (new SchemaParser)->parse($schema);
         }
         $this->validationRules = (new ValidationBuilder($this->tableName, $this->option('softdeletes')))->build($schema);
         $stub = (new SyntaxBuilder)->create($schema, $stub);
-        
+
         return $this;
     }
 
