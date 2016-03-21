@@ -6,11 +6,15 @@ Generates boilerplate for lumen REST API: migration, controller, model, request 
 ```
 composer require --dev asmiarowski/lumen-api-generator
 ```
-<p>Add this to app\Providers\AppServiceProvider inside boot() method:</p>
+<p>Add this to app\Providers\AppServiceProvider inside register() method:</p>
 ```
 if ($this->app->environment() == 'local') {
     $this->app->register('Smiarowski\Generators\GeneratorsServiceProvider');
 }
+```
+<p>Uncomment in `bootstrap/app.php`</p>
+```
+ $app->register(App\Providers\AppServiceProvider::class);
 ```
 For POST / PUT data to work you either have to send your request with `Accept: application/json` header or set up json responses globally in app/Http/Requests/Request.php like so:
 ```
